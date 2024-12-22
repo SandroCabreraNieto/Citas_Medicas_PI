@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Registrar Nuevo Historial</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+  <script>
+    function obtenerPacientePorDni(dni) {
+      // Verificar si el dni tiene un formato correcto
+      if (!dni || dni.trim() === '') {
+        alert("Por favor ingrese un DNI válido.");
+        return;
+      }
+
+      console.log(`Buscando paciente con DNI: ${dni}`);  // Log para verificar el valor del DNI
+      fetch(`/pacientes/obtenerPacientePorDni?dni=${dni}`, {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json'
+          }
+      })
+      .then(response => {
+          if (response.ok) {
+              return response.json();  // Convertir la respuesta en JSON si es exitosa
+          } else {
+              throw new Error('Paciente no encontrado');
+          }
+      })
+      .then(data => {
+          console.log("Paciente encontrado:", data);
+
+          // Extraer los valores del paciente
+          const dniPaciente = data.dni;
+          const nombrePaciente = data.nombre;
+          const apellidoPaciente = data.apellido;
+          const idPaciente = data.idPaciente;
+
+          // Mostrar los datos en el formulario
+          document.getElementById('dniPaciente').value = dniPaciente;
+          document.getElementById('nombrePaciente').value = nombrePaciente;
+          document.getElementById('apellidoPaciente').value = apellidoPaciente;
+          document.getElementById('idPaciente').value = idPaciente;
+
+      })
+      .catch(error => {
+          console.error('Error:', error.message);
+          alert("Error: " + error.message);
+      });
+    }
+
+    // Llamar la función cuando se haga clic en el botón de buscar
+    function cargarPacientePorDni() {
+      const dni = document.getElementById('dniPaciente').value;
+      if (!dni) {
+        alert("Por favor, ingresa un DNI.");
+        return;
+      }
+      obtenerPacientePorDni(dni);
+    }
+  </script>
+  <style>
+    body {
+        background-color: #f8f9fa;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .form-container {
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 800px;
+    }
+
+    .form-container h2 {
+        margin-bottom: 20px;
+        text-align: center;
+        font-size: 24px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-label {
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .form-control {
+        border-radius: 5px;
+        border-color: #ced4da;
+        padding: 10px;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #004085;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+        border-color: #545b62;
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+    }
+
+    .button-container a, .button-container button {
+        width: 48%;
+    }
+
+    .row-cols-md-2 .col-md-6 {
+        margin-bottom: 15px;
+    }
+     /* Asegurarse de que todos los inputs y selects tengan el mismo ancho */
+    .form-control, .form-select, .form-textarea {
+        width: 100%;  /* Los campos ocuparán todo el ancho disponible */
+        border-radius: 5px;  /* Bordes redondeados */
+        border-color: #ced4da;  /* Color del borde */
+        padding: 10px;  /* Relleno dentro del input */
+        font-size: 14px;  /* Tamaño de la fuente consistente */
+    }
+
+    /* En el caso del input-group con el DNI, mantendremos el estilo pero ajustaremos el ancho */
+    .input-group {
+        display: flex;
+        width: 100%;  /* Aseguramos que el input-group ocupe todo el espacio */
+    }
+
+    .input-group .form-control {
+        width: 80%;  /* Reduce el ancho del campo DNI (80%) */
+    }
+
+    /* Icono cuadrado de búsqueda */
+    .btn-search {
+        background-color: #007bff;  /* Color del fondo */
+        border: none;
+        color: white;
+        padding: 10px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        width: 40px;  /* Botón cuadrado */
+        height: 43px; /* Botón cuadrado */
+    }
+
+    .btn-search:hover {
+        background-color: #0056b3; /* Cambio de color al pasar el mouse */
+    }
+
+    .btn-search i {
+        font-size: 18px;  /* Ajusta el tamaño del ícono dentro del botón */
+    }
+
+    /* Estilo adicional para los botones del formulario */
+    .button-container a, .button-container button {
+        width: 48%; /* Asegura que los botones no se estiren y se vean bien alineados */
+    }
+
+    /* Estilo para los contenedores de las filas */
+    .row-cols-md-2 .col-md-6 {
+        margin-bottom: 15px;
+    }
+  </style>
+</head>
+
+<body>
+<div class="form-container">
+
+  <h2>Registrar Nuevo Historial Clínico</h2>
+  <form th:action="@{/historial/guardar}" method="post">
+    <div class="row row-cols-md-2">
+      <!-- DNI Paciente -->
+      <div class="mb-3">
+        <label for="dniPaciente" class="form-label">DNI del Paciente</label>
+        <div class="input-group">
+          <input type="text" id="dniPaciente" name="dniPaciente" class="form-control" placeholder="Ingresa el DNI del paciente" required pattern="\d{8}" title="Debe ser un número de 8 dígitos">
+          <button type="button" class="btn btn-search" onclick="cargarPacientePorDni()">
+            <i class="fas fa-search"></i> <!-- Ícono de búsqueda -->
+          </button>
+        </div>
+      </div>
+
+      <!-- Nombre del Paciente (solo lectura) -->
+      <input type="hidden" id="idPaciente" name="idPaciente">
+
+      <div class="mb-3">
+        <label for="nombrePaciente" class="form-label">Nombre del Paciente</label>
+        <input type="text" id="nombrePaciente" name="nombrePaciente" class="form-control" readonly required>
+      </div>
+
+      <!-- Apellido del Paciente (solo lectura) -->
+      <div class="mb-3">
+        <label for="apellidoPaciente" class="form-label">Apellido del Paciente</label>
+        <input type="text" id="apellidoPaciente" name="apellidoPaciente" class="form-control" readonly required>
+      </div>
+
+      <!-- Fecha -->
+      <div class="mb-3">
+        <label for="fecha" class="form-label">Fecha del Historial Clínico</label>
+        <input type="date" id="fecha" name="fecha" class="form-control" required>
+      </div>
+
+      <!-- Enfermedad -->
+      <div class="form-group">
+        <label for="enfermedad" class="form-label">Enfermedad:</label>
+        <textarea type="text" id="enfermedad" name="enfermedad" th:value="${historial.enfermedad}" class="form-control" required></textarea>
+      </div>
+
+      <!-- Tratamiento -->
+      <div class="form-group">
+        <label for="tratamiento" class="form-label">Tratamiento:</label>
+        <textarea type="text" id="tratamiento" name="tratamiento" th:value="${historial.tratamiento}" class="form-control" required></textarea>
+      </div>
+
+      <!-- Observaciones -->
+      <div class="form-group">
+        <label for="observaciones" class="form-label">Observaciones:</label>
+        <textarea type="text" id="observaciones" name="observaciones" th:value="${historial.observaciones}" class="form-control" required></textarea>
+      </div>
+
+      <div>
+
+      </div>
+      <div class="button-container">
+        <button type="submit" id="registerButton" class="btn btn-success">Registrar</button>
+        <a href="/historial/listar" class="btn btn-secondary">Cancelar</a>
+      </div>
+    </div>
+  </form>
+</div>
+<script>
+  // Función para mostrar alerta y cerrar el modal después de guardar
+  document.getElementById('registerButton').addEventListener('click', (event) => {
+      const form = document.querySelector('form'); // Seleccionar el formulario
+
+      // Verificar si el formulario es válido
+      if (!form.checkValidity()) {
+          // Si no es válido, mostrar mensajes de validación nativos
+          form.reportValidity();
+          return; // Salir de la función para evitar el SweetAlert
+      }
+
+      // Si es válido, detener el envío predeterminado y mostrar el SweetAlert
+      event.preventDefault();
+
+      Swal.fire({
+          title: "¡Guardado!",
+          text: "El registro se realizó con éxito.",
+          icon: "success",
+          confirmButtonText: "OK"
+      }).then((result) => {
+          if (result.isConfirmed) {
+              // Si el usuario hace clic en "OK", enviar el formulario
+              form.submit();
+          }
+      });
+  });
+</script>
+</body>
+</html>

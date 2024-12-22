@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listado de Citas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <style>
+
+    .crud-container {
+    display: flex;
+    gap: 5px;
+    }
+
+    .crud-button:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), 0 0 10px rgba(161, 182, 125, 0.5); /* Sombra y resplandor */
+    }
+
+    .crud-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.3s;
+    }
+
+    .crud-button i {
+    font-size: 18px;
+    }
+
+    .update-btn{
+    background-color: #2196F3;
+    }
+
+    .read-btn  {
+    background-color: #FF9800;
+    }
+
+    .delete-btn {
+    background-color: #f44336;
+    }
+    .sidebar-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 20px;
+        font-size: 1.1rem;
+        color: #ffffff;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+    .sidebar-item:hover {
+        background-color: #374151;
+    }
+
+    .sidebar-item i {
+        margin-right: 12px;
+    }
+
+    .sidebar-header {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: white;
+    }
+    /* Estilo para la imagen de logo en círculo */
+    img.rounded-full {
+
+        width: 110px;
+        height: 105px;
+        object-fit: cover;
+    }
+
+    /* Centrar el logo en su contenedor */
+    .logo-container {
+        margin-top: 16px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 120px;
+    }
+    </style>
+</head>
+
+<body class="bg-gray-100 font-sans flex min-h-screen">
+
+<!-- Barra lateral -->
+<aside class="w-64 bg-blue-800 text-white min-h-screen">
+    <div class="logo-container p-6">
+        <img src="/logoclinica.png" class="max-w-full h-auto rounded-full">
+    </div>
+    <nav class="mt-10">
+        <ul>
+            <li class="sidebar-item">
+                <i class="fas fa-home"></i>
+                <a href="/home/listar" class="ml-4">Home</a>
+            </li>
+            <li class="sidebar-item">
+                <i class="fas fa-user-md"></i>
+                <a href="/pacientes/listar" class="ml-4">Pacientes</a>
+            </li>
+            <li class="sidebar-item">
+                <i class="fas fa-calendar-check"></i>
+                <a href="/citas/listar" class="ml-4">Citas</a>
+            </li>
+            <li class="sidebar-item">
+                <i class="fas fa-stethoscope"></i>
+                <a href="/medicos/listar" class="ml-4">Médicos</a>
+            </li>
+            <li class="sidebar-item">
+                <i class="fas fa-history"></i>
+                <a href="/historial/listar" class="ml-4">Historial Médico</a>
+            </li>
+        </ul>
+    </nav>
+</aside>
+
+<div class="flex-grow flex flex-col">
+    <!-- Encabezado -->
+    <header class="bg-blue-800 text-white py-4 shadow-md">
+        <div class="container mx-auto px-6">
+            <h1 class="text-2xl font-bold">LISTADO DE CITAS</h1>
+        </div>
+    </header>
+
+    <!-- Contenido -->
+    <main class="container mx-auto px-6 py-8 flex-grow">
+
+        <!-- Formulario de búsqueda -->
+        <form class="mb-6 flex justify-end">
+            <input class="p-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" type="search" placeholder="Buscar Cita..." aria-label="Search" style="width: 200px;" name="buscar">
+            <button class="px-4 py-2 bg-green-500 text-white font-semibold rounded-r-lg hover:bg-green-600 transition" type="submit">Buscar</button>
+        </form>
+
+        <div class="overflow-x-auto bg-white shadow-lg rounded-lg">
+            <table class="min-w-full table-auto bg-white text-gray-800 rounded-lg shadow-lg">
+                <thead class="bg-blue-800 text-white">
+                <tr>
+                    <th class="px-6 py-4 text-lg">ID Cita</th>
+                    <th class="px-6 py-4 text-lg">DNI Paciente</th>
+                    <th class="px-6 py-4 text-lg">Paciente</th>
+                    <th class="px-6 py-4 text-lg">Médico</th>
+                    <th class="px-6 py-4 text-lg">Especialidad</th>
+                    <th class="px-6 py-4 text-lg">Fecha</th>
+                    <th class="px-6 py-4 text-lg">Motivo</th>
+                    <th class="px-6 py-4 text-lg">Estado</th>
+                    <th class="px-6 py-4 text-lg">Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="cita : ${citas}" class="hover:bg-gray-100">
+                    <td class="px-6 py-4 text-center" th:text="${cita.idCita}"></td>
+                    <td class="px-6 py-4 text-center" th:text="${cita.dniPaciente}"></td>
+                    <td class="px-6 py-4" th:text="${cita.nombrePaciente} + ' ' + ${cita.apellidoPaciente}"></td>
+                    <td class="px-6 py-4" th:text="${cita.nombreMedico} + ' ' + ${cita.apellidoMedico}"></td>
+                    <td class="px-6 py-4" th:text="${cita.especialidad}"></td>
+                    <td class="px-6 py-4 text-center" th:text="${#dates.format(cita.fecha, 'dd/MM/yyyy')}"></td>
+                    <td class="px-6 py-4" th:text="${cita.motivo}"></td>
+                    <td class="px-6 py-4 text-center" th:text="${cita.estado}"></td>
+                    <td class="px-6 py-4 text-center">
+                        <div class="crud-container">
+                        <a th:href="@{/citas/editar/{id}(id=${cita.idCita})}" class="crud-button update-btn"><i class="fas fa-edit"></i></a>
+                        <a th:href="@{/citas/detalle/{id}(id=${cita.idCita})}" class="crud-button read-btn"><i class="fas fa-eye"></i></a>
+                        <a th:href="@{/citas/eliminar/{id}(id=${cita.idCita})}" class="crud-button delete-btn deleteButton"><i class="fas fa-trash-alt"></i> </a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Botón para agregar nueva cita -->
+        <div class="mt-8 text-right">
+            <a href="/citas/nuevo" class="inline-block bg-blue-800 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow-md transition duration-200">Agregar Nueva Cita</a>
+        </div>
+
+    </main>
+</div>
+<!-- Íconos de mensaje y sesión en la esquina -->
+<div class="fixed top-4 right-4 space-x-4 z-10">
+    <!-- Ícono de Mensaje (más claro) -->
+    <button id="toggleChat" class="text-2xl text-gray-500 hover:text-gray-700">
+        <i class="fas fa-comment-dots"></i>
+    </button>
+
+    <!-- Ícono de Salir -->
+    <a href="/api/login" class="text-2xl text-gray-500 hover:text-gray-700">
+        <i class="fas fa-sign-out-alt"></i>
+    </a>
+</div>
+
+<!-- Chat en la esquina inferior derecha -->
+<div id="chatContainer" class="hidden fixed bottom-0 right-0 mb-4 mr-4 bg-white shadow-lg rounded-lg max-w-xs">
+    <!-- Encabezado del Chat con botón de cerrar -->
+    <div class="p-4 bg-blue-800 text-white font-bold flex justify-between items-center">
+        <span>Chat</span>
+        <button id="closeChat" class="text-white text-xl font-bold focus:outline-none">✖</button>
+    </div>
+    <!-- Mensajes del Chat -->
+    <div id="chatMessages" class="p-4 h-64 overflow-y-scroll"></div>
+    <!-- Campo para escribir mensajes -->
+    <div class="p-4">
+        <input id="chatInput" type="text" placeholder="Escribe un mensaje..." class="w-full px-3 py-2 border rounded-md" />
+        <button id="sendMessage" class="w-full mt-2 bg-blue-800 text-white py-2 rounded-md">Enviar</button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+<script>
+    const toggleChat = document.getElementById('toggleChat');
+    const closeChat = document.getElementById('closeChat');
+    const chatContainer = document.getElementById('chatContainer');
+    const chatMessages = document.getElementById('chatMessages');
+    const chatInput = document.getElementById('chatInput');
+    const sendMessage = document.getElementById('sendMessage');
+
+    // Mostrar/Ocultar el chat al presionar el ícono
+    toggleChat.addEventListener('click', () => {
+      chatContainer.classList.toggle('hidden');
+    });
+
+    // Cerrar el chat al presionar la "X"
+    closeChat.addEventListener('click', () => {
+      chatContainer.classList.add('hidden');
+    });
+
+    // Conexión con SockJS y Stomp
+    const socket = new SockJS('/chat');
+    const stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, () => {
+      stompClient.subscribe('/topic/messages', (message) => {
+        const msg = document.createElement('p');
+        msg.textContent = message.body;
+        chatMessages.appendChild(msg);
+      });
+    });
+
+    // Enviar mensajes
+    sendMessage.addEventListener('click', () => {
+      const message = chatInput.value;
+      if (message.trim()) {
+        stompClient.send('/app/sendMessage', {}, message);
+        chatInput.value = '';
+      }
+    });
+</script>
+
+
+<!-- SWEETALERT ELIMINAR-->
+<script>
+    document.querySelectorAll('.deleteButton').forEach(button => {
+        button.addEventListener('click', (event) => {
+            event.preventDefault(); // Evita la acción por defecto del enlace
+            Swal.fire({
+                title: "¿Estás seguro?",
+                text: "¡No podrás revertir esto!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Sí, eliminarlo",
+                cancelButtonText: "Cancelar"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Mostrar el mensaje de éxito
+                    Swal.fire({
+                        title: "¡Eliminado!",
+                        text: "El registro ha sido eliminado.",
+                        icon: "success",
+                        timer: 1500, // Este es el tiempo que durará el mensaje (1.5 segundos)
+                        showConfirmButton: false // No mostrar el botón de confirmación
+                    }).then(() => {
+                        // Redirigir al listado de citas después de mostrar el mensaje
+                        window.location.href = event.target.href;
+                    });
+                }
+            });
+        });
+    });
+</script>
+
+
+</body>
+
+</html>

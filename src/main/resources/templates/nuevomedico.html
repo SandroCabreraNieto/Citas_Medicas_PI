@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Agregar Médico</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert -->
+
+  <script>
+    // Función para validar que solo se ingresen números
+    function validarNumeros(event) {
+        const valor = event.target.value;
+        if (isNaN(valor)) {
+            // Si el valor no es un número, elimina el último carácter ingresado
+            event.target.value = valor.slice(0, -1);
+        }
+    }
+  </script>
+  <!-- Custom Styles -->
+  <style>
+    body {
+        background-color: #f8f9fa;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .form-container {
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 800px;
+    }
+
+    .form-container h2 {
+        margin-bottom: 20px;
+        text-align: center;
+        font-size: 24px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-label {
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .form-control {
+        border-radius: 5px;
+        border-color: #ced4da;
+        padding: 10px;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #004085;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+        border-color: #545b62;
+    }
+
+    .button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.button-container a, .button-container button {
+    width: 48%; /* Asegura que los botones no se estiren y se vean bien alineados */
+}
+
+
+    .row-cols-md-2 .col-md-6 {
+        margin-bottom: 15px;
+    }
+    /* Asegurarse de que todos los inputs y selects tengan el mismo ancho */
+    .form-control, .form-select, .form-textarea {
+            width: 100%;  /* Los campos ocuparán todo el ancho disponible */
+            border-radius: 5px;  /* Bordes redondeados */
+            border-color: #ced4da;  /* Color del borde */
+            padding: 10px;  /* Relleno dentro del input */
+            font-size: 14px;  /* Tamaño de la fuente consistente */
+        }
+
+        /* En el caso del input-group con el DNI, mantendremos el estilo pero ajustaremos el ancho */
+        .input-group {
+            display: flex;
+            width: 100%;  /* Aseguramos que el input-group ocupe todo el espacio */
+        }
+
+        .input-group .form-control {
+            width: 80%;  /* Reduce el ancho del campo DNI (80%) */
+        }
+
+        /* Icono cuadrado de búsqueda */
+        .btn-search {
+            background-color: #007bff;  /* Color del fondo */
+            border: none;
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            width: 40px;  /* Botón cuadrado */
+            height: 43px; /* Botón cuadrado */
+        }
+
+        .btn-search:hover {
+            background-color: #0056b3; /* Cambio de color al pasar el mouse */
+        }
+
+        .btn-search i {
+            font-size: 18px;  /* Ajusta el tamaño del ícono dentro del botón */
+        }
+
+        /* Estilo adicional para los botones del formulario */
+        .button-container a, .button-container button {
+            width: 48%; /* Asegura que los botones no se estiren y se vean bien alineados */
+        }
+
+        /* Estilo para los contenedores de las filas */
+        .row-cols-md-2 .col-md-6 {
+            margin-bottom: 15px;
+        }
+
+  </style>
+
+  <!-- jQuery and Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<body>
+
+<div class="form-container">
+  <h2>Agregar Médico</h2>
+  <!-- Formulario para agregar un nuevo médico -->
+  <form id="formAgregarMedico" th:action="@{/medicos/guardar}" th:object="${medicos}" method="post">
+    <div class="row row-cols-md-2">
+      <input type="hidden" th:field="*{idMedico}" />
+
+      <!-- Campo Nombre -->
+      <div class="mb-3">
+        <label for="nombre" class="form-label">Nombre</label>
+        <input type="text" class="form-control" id="nombre" name="nombre" th:field="*{nombre}" placeholder="Ingrese el nombre del médico" required>
+      </div>
+
+      <!-- Campo Apellido -->
+      <div class="mb-3">
+        <label for="apellido" class="form-label">Apellido</label>
+        <input type="text" class="form-control" id="apellido" name="apellido" th:field="*{apellido}" placeholder="Ingrese el apellido del médico" required>
+      </div>
+
+      <!-- Campo Especialidad -->
+      <div class="mb-3">
+        <label for="especialidad" class="form-label">Especialidad</label>
+        <input type="text" class="form-control" id="especialidad" name="especialidad" th:field="*{especialidad}" placeholder="Ingrese la especialidad del médico" required>
+      </div>
+
+      <!-- Campo Teléfono -->
+      <div class="mb-3">
+        <label for="telefono" class="form-label">Teléfono</label>
+        <input type="text" class="form-control" id="telefono" name="telefono" th:field="*{telefono}" placeholder="Ingrese número de teléfono" required pattern="\d{9}" title="Debe tener 9 dígitos"
+               maxlength="9"
+               oninput="validarNumeros(event)">
+      </div>
+
+      <!-- Campo Email -->
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" name="email" th:field="*{email}" placeholder="Ingrese el email" required>
+      </div>
+
+      <!-- Campo Dirección -->
+      <div class="mb-3">
+        <label for="direccion" class="form-label">Dirección</label>
+        <input type="text" class="form-control" id="direccion" name="direccion" th:field="*{direccion}" placeholder="Ingrese la dirección del médico" required>
+      </div>
+
+      <!-- Campo Disponibilidad -->
+      <div class="mb-3">
+        <label for="disponibilidad" class="form-label">Disponibilidad</label>
+        <select class="form-control" id="disponibilidad" name="disponibilidad" th:field="*{disponibilidad}" required>
+          <option value="" selected>Selecciona</option>
+          <option value="Lunes a Viernes 8:00 - 18:00">Lunes a Viernes 8:00 - 18:00</option>
+          <option value="Lunes a Viernes 9:00 - 19:00">Lunes a Viernes 9:00 - 19:00</option>
+          <option value="Lunes a Viernes 10:00 - 20:0">Lunes a Viernes 10:00 - 20:00</option>
+          <option value="Sábados 9:00 - 14:00">Sábados 9:00 - 14:00</option>
+        </select>
+      </div>
+      <div>
+
+      </div>
+      <!-- Botones de Enviar y Cancelar -->
+      <div class="button-container">
+        <button type="submit" id="registerButton" class="btn btn-success">
+          Registrar
+        </button>
+        <a href="/medicos/listar" class="btn btn-secondary">
+          Cancelar
+        </a>
+      </div>
+    </div>
+
+  </form>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Función para mostrar alerta y cerrar el modal después de guardar
+  document.getElementById('registerButton').addEventListener('click', (event) => {
+      const form = document.querySelector('form'); // Seleccionar el formulario
+
+      // Verificar si el formulario es válido
+      if (!form.checkValidity()) {
+          // Si no es válido, mostrar mensajes de validación nativos
+          form.reportValidity();
+          return; // Salir de la función para evitar el SweetAlert
+      }
+
+      // Si es válido, detener el envío predeterminado y mostrar el SweetAlert
+      event.preventDefault();
+
+      Swal.fire({
+          title: "¡Guardado!",
+          text: "El registro se realizó con éxito.",
+          icon: "success",
+          confirmButtonText: "OK"
+      }).then((result) => {
+          if (result.isConfirmed) {
+              // Si el usuario hace clic en "OK", enviar el formulario
+              form.submit();
+          }
+      });
+  });
+</script>
+
+</body>
+
+</html>

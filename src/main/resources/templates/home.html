@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hospital Santa Rosa</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <style>
+    .crud-container {
+    display: flex;
+    gap: 5px;
+    }
+
+    .crud-button:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), 0 0 10px rgba(161, 182, 125, 0.5); /* Sombra y resplandor */
+    }
+
+    .crud-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.3s;
+    }
+
+    .crud-button i {
+    font-size: 18px;
+    }
+
+    .update-btn{
+    background-color: #2196F3;
+    }
+
+    .read-btn  {
+    background-color: #FF9800;
+    }
+
+    .delete-btn {
+    background-color: #f44336;
+    }
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    font-size: 1.1rem;
+    color: #ffffff;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar-item:hover {
+    background-color: #374151;
+}
+
+.sidebar-item i {
+    margin-right: 12px;
+}
+
+.sidebar-header {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: white;
+}
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    font-size: 1.1rem;
+    color: #ffffff;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar-item:hover {
+    background-color: #374151;
+}
+
+.sidebar-item i {
+    margin-right: 12px;
+}
+
+.sidebar-header {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: white;
+}
+
+/* Estilo para la imagen de logo en círculo */
+img.rounded-full {
+
+    width: 110px;
+    height: 105px;
+    object-fit: cover;
+}
+
+/* Centrar el logo en su contenedor */
+.logo-container {
+    margin-top: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 120px;
+}
+  </style>
+</head>
+<body class="bg-cover bg-center min-h-screen" style="background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsQLX5UoRD7_ISPkL3Ne3Odz09ZSO3OTCO0g&s');">
+
+<!-- Barra lateral -->
+<aside class="w-64 bg-blue-800 text-white min-h-screen fixed">
+  <div class="logo-container p-6">
+    <img src="/logoclinica.png" class="max-w-full h-auto rounded-full">
+  </div>
+  <nav class="mt-10">
+    <ul>
+      <li class="sidebar-item">
+        <i class="fas fa-home"></i>
+        <a href="/home/listar" class="ml-4">Home</a>
+      </li>
+      <li class="sidebar-item">
+        <i class="fas fa-user-md"></i>
+        <a href="/pacientes/listar" class="ml-4">Pacientes</a>
+      </li>
+      <li class="sidebar-item">
+        <i class="fas fa-calendar-check"></i>
+        <a href="/citas/listar" class="ml-4">Citas</a>
+      </li>
+      <li class="sidebar-item">
+        <i class="fas fa-stethoscope"></i>
+        <a href="/medicos/listar" class="ml-4">Médicos</a>
+      </li>
+      <li class="sidebar-item">
+        <i class="fas fa-history"></i>
+        <a href="/historial/listar" class="ml-4">Historial Médico</a>
+      </li>
+    </ul>
+  </nav>
+</aside>
+
+<!-- Contenido principal -->
+<div class="ml-64 p-8 flex flex-col justify-center items-center min-h-screen bg-black bg-opacity-50">
+  <div class="text-center text-white p-8 bg-opacity-75 w-full max-w-4xl">
+    <h1 class="text-4xl font-bold mb-4">Bienvenidos a Hospital Santa Rosa</h1>
+    <p class="text-xl mb-6">Comprometidos con la salud de nuestros pacientes</p>
+
+    <p class="text-lg mb-6">En Hospital Santa Rosa nos dedicamos a brindar atención médica de calidad, con un equipo de profesionales capacitados que se preocupan por el bienestar de cada paciente. Nuestra misión es proporcionar un ambiente seguro, amigable y accesible para todos.</p>
+
+    <!-- Imagen del hospital -->
+    <div class="mb-6">
+      <img src="/imghos.jpg" alt="Hospital Santa Rosa" class="w-full rounded-lg shadow-lg">
+    </div>
+
+  </div>
+</div>
+
+<!-- Footer Section -->
+<footer class="bg-black text-white text-center py-8 mt-10 flex justify-center items-center">
+  <p>&copy; 2024 Hospital Santa Rosa. Todos los derechos reservados.</p>
+</footer>
+
+
+
+<!-- Íconos de mensaje y sesión en la esquina -->
+<div class="fixed top-4 right-4 space-x-4 z-10 flex flex-col items-center">
+  <!-- Ícono de Mensaje -->
+  <button id="toggleChat" class="text-2xl text-gray-500 hover:text-blue-500 transition duration-300 ease-in-out transform hover:scale-110 mb-4 p-3 rounded-full bg-white shadow-md hover:shadow-lg">
+    💬
+  </button>
+</div>
+
+<!-- Chat en la esquina inferior derecha -->
+<div id="chatContainer" class="hidden fixed bottom-0 right-0 mb-4 mr-4 bg-white shadow-lg rounded-lg max-w-xs">
+  <div class="p-4 bg-blue-800 text-white font-bold">Chat</div>
+  <div id="chatMessages" class="p-4 h-64 overflow-y-scroll"></div>
+  <div class="p-4">
+    <input id="chatInput" type="text" placeholder="Escribe un mensaje..." class="w-full px-3 py-2 border rounded-md" />
+    <button id="sendMessage" class="w-full mt-2 bg-blue-800 text-white py-2 rounded-md">Enviar</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+<script>
+  const toggleChat = document.getElementById('toggleChat');
+  const chatContainer = document.getElementById('chatContainer');
+  const chatMessages = document.getElementById('chatMessages');
+  const chatInput = document.getElementById('chatInput');
+  const sendMessage = document.getElementById('sendMessage');
+
+  toggleChat.addEventListener('click', () => {
+    chatContainer.classList.toggle('hidden');
+  });
+
+  const socket = new SockJS('/chat');
+  const stompClient = Stomp.over(socket);
+
+  stompClient.connect({}, () => {
+    stompClient.subscribe('/topic/messages', (message) => {
+      const msg = document.createElement('p');
+      msg.textContent = message.body;
+      chatMessages.appendChild(msg);
+    });
+  });
+
+  sendMessage.addEventListener('click', () => {
+    const message = chatInput.value;
+    if (message.trim()) {
+      stompClient.send('/app/sendMessage', {}, message);
+      chatInput.value = '';
+    }
+  });
+</script>
+
+</body>
+</html>

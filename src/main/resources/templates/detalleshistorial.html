@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hospital Santa Rosa - Detalles de Cita</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-cover bg-center min-h-screen" style="background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsQLX5UoRD7_ISPkL3Ne3Odz09ZSO3OTCO0g&s');">
+
+<!-- Barra lateral -->
+<aside class="w-64 bg-blue-800 text-white min-h-screen fixed">
+  <div class="p-6 text-center">
+    <h2 class="text-2xl font-bold">Atlantis</h2>
+  </div>
+  <nav class="mt-10">
+    <ul>
+      <li class="px-6 py-3 hover:bg-blue-700 flex items-center">
+        <span class="text-xl">🏠</span>
+        <a href="/home/listar" class="ml-4 font-semibold">Home</a>
+      </li>
+      <li class="px-6 py-3 hover:bg-blue-700 flex items-center">
+        <span class="text-xl">👥</span>
+        <a href="/pacientes/listar" class="ml-4 font-semibold">Pacientes</a>
+      </li>
+      <li class="px-6 py-3 hover:bg-blue-700 flex items-center">
+        <span class="text-xl">📅</span>
+        <a href="/citas/listar" class="ml-4 font-semibold">Citas</a>
+      </li>
+      <li class="px-6 py-3 hover:bg-blue-700 flex items-center">
+        <span class="text-xl">👨‍⚕️</span>
+        <a href="/medicos/listar" class="ml-4 font-semibold">Médicos</a>
+      </li>
+      <li class="px-6 py-3 hover:bg-blue-700 flex items-center">
+        <span class="text-xl">📋</span>
+        <a href="/historial/listar" class="ml-4 font-semibold">Historial Médico</a>
+      </li>
+    </ul>
+  </nav>
+</aside>
+
+<!-- Contenido principal -->
+<div class="ml-64 p-8 flex flex-col justify-center items-center min-h-screen bg-black bg-opacity-50">
+  <div class="text-center text-white p-8 bg-gray-800 bg-opacity-80 w-full max-w-4xl rounded-lg shadow-lg">
+    <h1 class="text-4xl font-bold mb-8">Detalles de Historia Medica</h1>
+
+    <!-- Tabla de detalles -->
+    <div class="overflow-hidden rounded-lg shadow-lg">
+      <table class="table-auto w-full bg-white text-left text-gray-700">
+        <tbody>
+        <tr class="border-b">
+          <td class="px-4 py-2 font-semibold">ID del Paciente:</td>
+          <td class="px-4 py-2" th:text="${historial.paciente.idPaciente}"></td>
+        </tr>
+        <tr class="border-b">
+          <td class="px-4 py-2 font-semibold">Nombre del Paciente:</td>
+          <td class="px-4 py-2" th:text="${historial.paciente.nombre}"></td>
+        </tr>
+        <tr class="border-b">
+          <td class="px-4 py-2 font-semibold">Apellido del Paciente:</td>
+          <td class="px-4 py-2" th:text="${historial.paciente.apellido}"></td>
+        </tr>
+        <tr class="border-b">
+          <td class="px-4 py-2 font-semibold">Fecha:</td>
+          <td class="px-4 py-2" th:text="${#dates.format(historial.fecha, 'yyyy-MM-dd')}"></td>
+        </tr>
+        <tr class="border-b">
+          <td class="px-4 py-2 font-semibold">Enfermedad:</td>
+          <td class="px-4 py-2" th:text="${historial.enfermedad}"></td>
+        </tr>
+        <tr>
+          <td class="px-4 py-2 font-semibold">Tratamiento:</td>
+          <td class="px-4 py-2" th:text="${historial.tratamiento}"></td>
+        </tr>
+        <tr>
+          <td class="px-4 py-2 font-semibold">Observaciones:</td>
+          <td class="px-4 py-2" th:text="${historial.observaciones}"></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Botón de regresar -->
+    <div class="mt-6">
+      <a href="/historial/listar" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
+        Volver a la lista de Historia
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Footer Section -->
+<footer class="bg-gray-800 text-white text-center py-4 mt-10">
+  <p>&copy; 2024 Hospital Santa Rosa. Todos los derechos reservados.</p>
+</footer>
+
+</body>

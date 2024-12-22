@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              name="reporteCitas"
+              language="java"
+              pageWidth="595" pageHeight="842"
+              columnWidth="530"
+              leftMargin="30" rightMargin="30" topMargin="30" bottomMargin="30">
+
+    <!-- Definir estilos globales -->
+    <style name="titleStyle" fontSize="14"/>
+    <style name="dataStyle" fontSize="12" fontName="Arial"/>
+
+    <!-- Parámetros -->
+    <parameter name="idPaciente" class="java.lang.Integer"/>
+
+    <!-- Definir la consulta SQL -->
+    <queryString>
+        <![CDATA[
+        SELECT id_cita, id_paciente, nombreyapellido, id_medico, nombreyapellido_medico, especialidad, fecha, motivo, estado
+        FROM Cita
+        WHERE id_paciente = $P{idPaciente}
+    ]]>
+    </queryString>
+
+    <!-- Campos -->
+    <field name="idCita" class="java.lang.Integer"/>
+    <field name="idPaciente" class="java.lang.Integer"/>
+    <field name="nombreyapellido" class="java.lang.String"/>
+    <field name="idMedico" class="java.lang.Integer"/>
+    <field name="nombreyapellidoMedico" class="java.lang.String"/>
+    <field name="fecha" class="java.util.Date"/>
+    <field name="motivo" class="java.lang.String"/>
+    <field name="estado" class="java.lang.String"/>
+
+    <!-- Bandas del reporte -->
+    <detail>
+        <band height="25">
+            <!-- ID Cita -->
+            <textField>
+                <reportElement x="0" y="0" width="80" height="25" style="dataStyle"/>
+                <textFieldExpression><![CDATA[$F{idCita}]]></textFieldExpression>
+            </textField>
+
+            <!-- Nombre y Apellido -->
+            <textField>
+                <reportElement x="90" y="0" width="150" height="25" style="dataStyle"/>
+                <textFieldExpression><![CDATA[$F{nombreyapellido}]]></textFieldExpression>
+            </textField>
+
+            <!-- Fecha -->
+            <textField>
+                <reportElement x="250" y="0" width="100" height="25" style="dataStyle"/>
+                <textFieldExpression><![CDATA[new java.text.SimpleDateFormat("yyyy-MM-dd").format($F{fecha})]]></textFieldExpression>
+            </textField>
+
+            <!-- ID Médico -->
+            <textField>
+                <reportElement x="360" y="0" width="80" height="25" style="dataStyle"/>
+                <textFieldExpression><![CDATA[$F{idMedico}]]></textFieldExpression>
+            </textField>
+
+            <!-- Nombre y Apellido Médico -->
+            <textField>
+                <reportElement x="450" y="0" width="150" height="25" style="dataStyle"/>
+                <textFieldExpression><![CDATA[$F{nombreyapellidoMedico}]]></textFieldExpression>
+            </textField>
+
+            <!-- Motivo -->
+            <textField>
+                <reportElement x="610" y="0" width="150" height="25" style="dataStyle"/>
+                <textFieldExpression><![CDATA[$F{motivo}]]></textFieldExpression>
+            </textField>
+
+            <!-- Estado -->
+            <textField>
+                <reportElement x="770" y="0" width="100" height="25" style="dataStyle"/>
+                <textFieldExpression><![CDATA[$F{estado}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+
+</jasperReport>

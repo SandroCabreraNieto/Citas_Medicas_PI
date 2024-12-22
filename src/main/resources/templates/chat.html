@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Interno</title>
+    <style>
+        #chat-container {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            width: 300px;
+        }
+
+        #chat-box {
+            display: none;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #messages {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            border-bottom: 1px solid #ddd;
+        }
+
+        #message-input {
+            border: none;
+            padding: 10px;
+            width: calc(100% - 20px);
+        }
+
+        #chat-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div id="chat-container">
+    <button id="chat-button">💬</button>
+    <div id="chat-box">
+        <div id="messages"></div>
+        <input type="text" id="message-input" placeholder="Escribe un mensaje..." />
+        <button id="send-button">Enviar</button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script>
+    // Configuración de WebSocket
+    const socket = new SockJS('/ws');
+    const stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, () => {
+        // Subscribirse a mensajes
+        stompClient.subscribe('/topic/messages', (message) => {
+            const msg = document.createElement('div');
+            msg.textContent = message.body;
+            document.getElementById('messages').appendChild(msg);
+        });
+    });
+
+    // Enviar mensaje
+    document.getElementById('send-button').addEventListener('click', () => {
+        const input = document.getElementById('message-input');
+        const message = input.value;
+        stompClient.send('/app/chat', {}, message);
+        input.value = '';
+    });
+
+    // Mostrar/ocultar el chat
+    document.getElementById('chat-button').addEventListener('click', () => {
+        const chatBox = document.getElementById('chat-box');
+        chatBox.style.display = chatBox.style.display === 'none' ? 'block' : 'none';
+    });
+</script>
+</body>
+</html>
